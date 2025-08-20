@@ -71,7 +71,7 @@ export async function GET() {
         }
       }
     });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to fetch events' },
       { status: 500 }
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: newEvent
     }, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { success: false, error: 'Failed to create event' },
       { status: 500 }

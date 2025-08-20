@@ -55,31 +55,31 @@ export default function EventsList() {
     fetchEvents();
   }, []);
 
-  const handleRSVP = async (eventId: string) => {
-    try {
-      const response = await fetch(`/api/events/${eventId}/rsvp`, {
-        method: "POST",
-      });
+  //   const handleRSVP = async (eventId: string) => {
+  //     try {
+  //       const response = await fetch(`/api/events/${eventId}/rsvp`, {
+  //         method: "POST",
+  //       });
 
-      const data = await response.json();
+  //       const data = await response.json();
 
-      if (data.success) {
-        setEvents((prevEvents) =>
-          prevEvents.map((event) =>
-            event.id === eventId
-              ? { ...event, rsvpCount: data.data.newRsvpCount }
-              : event
-          )
-        );
+  //       if (data.success) {
+  //         setEvents((prevEvents) =>
+  //           prevEvents.map((event) =>
+  //             event.id === eventId
+  //               ? { ...event, rsvpCount: data.data.newRsvpCount }
+  //               : event
+  //           )
+  //         );
 
-        setTotalRSVPs((prev) => prev + 1);
-      } else {
-        console.error("Failed to RSVP:", data.error);
-      }
-    } catch (err) {
-      console.error("Error RSVPing to event:", err);
-    }
-  };
+  //         setTotalRSVPs((prev) => prev + 1);
+  //       } else {
+  //         console.error("Failed to RSVP:", data.error);
+  //       }
+  //     } catch (err) {
+  //       console.error("Error RSVPing to event:", err);
+  //     }
+  //   };
 
   if (loading) {
     return (

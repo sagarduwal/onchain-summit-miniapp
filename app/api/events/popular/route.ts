@@ -70,6 +70,7 @@ export async function GET() {
       },
     });
   } catch (error) {
+    console.error("Error fetching popular events:", error);
     return NextResponse.json(
       { success: false, error: "Failed to fetch popular events" },
       { status: 500 }
