@@ -23,9 +23,10 @@ interface PopularEventsResponse {
 interface TopEventsProps {
   totalEvents: number;
   totalRSVPs: number;
+  onEventClick?: (event: Event) => void;
 }
 
-export default function TopEvents({ totalEvents, totalRSVPs }: TopEventsProps) {
+export default function TopEvents({ totalEvents, totalRSVPs, onEventClick }: TopEventsProps) {
   const [topEvents, setTopEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -99,7 +100,11 @@ export default function TopEvents({ totalEvents, totalRSVPs }: TopEventsProps) {
         <div className={styles.storiesLabel}>Popular Events</div>
         <div className={styles.storiesList}>
           {topEvents.map((event, index) => (
-            <div key={event.id} className={styles.storyCard}>
+            <div 
+              key={event.id} 
+              className={styles.storyCard}
+              onClick={() => onEventClick && onEventClick(event)}
+            >
               <div className={styles.storyRing}>
                 <div className={styles.storyContent}>
                   <div className={styles.storyRank}>#{index + 1}</div>

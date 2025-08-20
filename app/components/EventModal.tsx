@@ -1,0 +1,114 @@
+"use client";
+import { useState } from "react";
+import styles from "./EventModal.module.css";
+
+interface Event {
+  id: string;
+  name: string;
+  date: string;
+  description: string;
+  link: string;
+  rsvpCount: number;
+}
+
+interface EventModalProps {
+  event: Event | null;
+  onClose: () => void;
+  onRSVP?: () => void;
+}
+
+export default function EventModal({
+  event,
+  onClose,
+  onRSVP,
+}: EventModalProps) {
+  const [isRSVPing, setIsRSVPing] = useState(false);
+
+  if (!event) return null;
+
+  // const handleRSVP = async () => {
+  //   setIsRSVPing(true);
+  //   try {
+  //     const response = await fetch(`/api/events/${event.id}/rsvp`, {
+  //       method: "POST",
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (data.success) {
+  //       // Show success message or update UI
+  //       console.log("RSVP successful:", data.message);
+  //       // Call the onRSVP callback to refresh the events list
+  //       if (onRSVP) {
+  //         onRSVP();
+  //       }
+  //     } else {
+  //       console.error("Failed to RSVP:", data.error);
+  //     }
+  //   } catch (err) {
+  //     console.error("Error RSVPing to event:", err);
+  //   } finally {
+  //     setIsRSVPing(false);
+  //   }
+  // };
+
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  return (
+    <div className={styles.modalOverlay} onClick={handleBackdropClick}>
+      <div className={styles.modalContent}>
+        <button className={styles.closeButton} onClick={onClose}>
+          ×
+        </button>
+
+        <div className={styles.modalHeader}>
+          <h2 className={styles.eventTitle}>{event.name}</h2>
+          <div className={styles.rsvpBadge}>
+            <span className={styles.rsvpCount}>{event.rsvpCount}</span>
+            <span className={styles.rsvpLabel}>RSVPs</span>
+          </div>
+        </div>
+
+        <div className={styles.modalBody}>
+          <div className={styles.eventDetails}>
+            <div className={styles.detailItem}>
+              <span className={styles.detailIcon}>📅</span>
+              <span className={styles.detailText}>{event.date}</span>
+            </div>
+            <div className={styles.detailItem}>
+              <span className={styles.detailIcon}>📍</span>
+              <span className={styles.detailText}>Onchain Summit</span>
+            </div>
+          </div>
+
+          <div className={styles.eventDescription}>
+            <h3>About this event</h3>
+            <p>{event.description}</p>
+          </div>
+        </div>
+
+        <div className={styles.modalFooter}>
+          {/* <button 
+            className={styles.rsvpButton}
+            onClick={handleRSVP}
+            disabled={isRSVPing}
+          >
+            {isRSVPing ? "RSVPing..." : "RSVP Now"}
+          </button> */}
+          <a
+            href={event.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.learnMoreButton}
+          >
+            Learn More →
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}

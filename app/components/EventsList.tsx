@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import styles from "./EventsList.module.css";
 import TopEvents from "./TopEvents";
+import EventModal from "./EventModal";
 
 interface Event {
   id: string;
@@ -29,6 +30,8 @@ export default function EventsList() {
   const [totalRSVPs, setTotalRSVPs] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const fetchEvents = async () => {
     try {
@@ -55,31 +58,15 @@ export default function EventsList() {
     fetchEvents();
   }, []);
 
-  //   const handleRSVP = async (eventId: string) => {
-  //     try {
-  //       const response = await fetch(`/api/events/${eventId}/rsvp`, {
-  //         method: "POST",
-  //       });
+  const handleEventClick = (event: Event) => {
+    setSelectedEvent(event);
+    setIsModalOpen(true);
+  };
 
-  //       const data = await response.json();
-
-  //       if (data.success) {
-  //         setEvents((prevEvents) =>
-  //           prevEvents.map((event) =>
-  //             event.id === eventId
-  //               ? { ...event, rsvpCount: data.data.newRsvpCount }
-  //               : event
-  //           )
-  //         );
-
-  //         setTotalRSVPs((prev) => prev + 1);
-  //       } else {
-  //         console.error("Failed to RSVP:", data.error);
-  //       }
-  //     } catch (err) {
-  //       console.error("Error RSVPing to event:", err);
-  //     }
-  //   };
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setSelectedEvent(null);
+  };
 
   if (loading) {
     return (
@@ -104,23 +91,25 @@ export default function EventsList() {
 
   return (
     <div className={styles.container}>
-      <TopEvents totalEvents={totalEvents} totalRSVPs={totalRSVPs} />
+      <TopEvents 
+        totalEvents={totalEvents} 
+        totalRSVPs={totalRSVPs} 
+        onEventClick={handleEventClick}
+      />
 
       <div className={styles.eventsList}>
         {events.map((event) => (
-          <div key={event.id} className={styles.eventCard}>
+          <div
+            key={event.id}
+            className={styles.eventCard}
+            onClick={() => handleEventClick(event)}
+          >
             <div className={styles.eventHeader}>
               <h3 className={styles.eventName}>{event.name}</h3>
-              <div className={styles.rsvpCounter}>
-                <span className={styles.rsvpCount}>{event.rsvpCount}</span>
-                <span className={styles.rsvpLabel}>RSVPs</span>
-              </div>
+              <span className={styles.rsvpCount}>{event.rsvpCount} RSVPs</span>
             </div>
-
-            <div className={styles.eventDetails}>
-              <p className={styles.eventDate}>📅 {event.date}</p>
-              <p className={styles.eventDescription}>{event.description}</p>
-            </div>
+            <p className={styles.eventDate}>📅 {event.date}</p>
+            <p className={styles.eventDescription}>{event.description}</p>
 
             <div className={styles.eventActions}>
               {/* <button
@@ -134,6 +123,7 @@ export default function EventsList() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.learnMoreLink}
+                onClick={(e) => e.stopPropagation()}
               >
                 Learn More →
               </a>
@@ -141,6 +131,17 @@ export default function EventsList() {
           </div>
         ))}
       </div>
+
+      {isModalOpen && selectedEvent && (
+        <EventModal
+          event={selectedEvent}
+          onClose={handleCloseModal}
+          onRSVP={() => {
+            // Refresh events to get updated RSVP count
+            fetchEvents();
+          }}
+        />
+      )}
     </div>
   );
 }
