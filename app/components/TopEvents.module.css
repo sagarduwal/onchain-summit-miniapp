@@ -1,0 +1,252 @@
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 20px 0 20px;
+  background: white;
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.appTitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0;
+  background: linear-gradient(135deg, #0052ff, #00d4ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.rightSection {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.stats {
+  display: flex;
+  gap: 20px;
+}
+
+.walletContainer {
+  display: flex;
+  align-items: center;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.statNumber {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  line-height: 1;
+}
+
+.statLabel {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-weight: 500;
+  margin-top: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.loadingText {
+  text-align: center;
+  color: #64748b;
+  font-size: 1rem;
+  padding: 20px;
+}
+
+.storiesContainer {
+  margin-top: 20px;
+  margin-bottom: 32px;
+}
+
+.storiesLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 12px;
+}
+
+.storiesList {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.storyCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 80px;
+  cursor: pointer;
+}
+
+.storyRing {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #ff6b35, #f7931e, #0052ff, #00d4ff);
+  padding: 3px;
+  margin-bottom: 8px;
+  position: relative;
+}
+
+.storyCard:first-child .storyRing {
+  background: linear-gradient(45deg, #ffd700, #ffed4e, #ff6b35, #f7931e);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.storyContent {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 700;
+  position: relative;
+}
+
+.storyCard:first-child .storyContent {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+}
+
+.storyCard:nth-child(2) .storyContent {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.storyCard:nth-child(3) .storyContent {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+}
+
+.storyRank {
+  font-size: 0.875rem;
+  font-weight: 800;
+}
+
+.storyCrown {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 0.75rem;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-2px);
+  }
+  60% {
+    transform: translateY(-1px);
+  }
+}
+
+.storyInfo {
+  text-align: center;
+}
+
+.storyName {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 2px;
+  line-height: 1.2;
+}
+
+.storyRsvps {
+  font-size: 0.625rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 640px) {
+  .container {
+    margin: 0 auto;
+    padding: 16px 16px 0 16px;
+  }
+  
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .appTitle {
+    font-size: 1.5rem;
+  }
+  
+  .rightSection {
+    align-self: flex-end;
+    gap: 12px;
+  }
+  
+  .stats {
+    gap: 16px;
+  }
+  
+  .statNumber {
+    font-size: 1.25rem;
+  }
+  
+  .walletContainer {
+    flex-shrink: 0;
+  }
+  
+  .storiesContainer {
+    margin-top: 16px;
+    margin-bottom: 24px;
+  }
+  
+  .storyRing {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .storyCard {
+    min-width: 70px;
+  }
+  
+  .storiesList {
+    gap: 12px;
+  }
+}
