@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useAccount } from "wagmi";
 import styles from "./EventModal.module.css";
 
 interface Event {
@@ -17,40 +18,50 @@ interface EventModalProps {
   onRSVP?: () => void;
 }
 
-export default function EventModal({
-  event,
-  onClose,
-  onRSVP,
-}: EventModalProps) {
+export default function EventModal({ event, onClose, onRSVP }: EventModalProps) {
+  const { address, isConnected } = useAccount();
   const [isRSVPing, setIsRSVPing] = useState(false);
 
   if (!event) return null;
 
-  // const handleRSVP = async () => {
-  //   setIsRSVPing(true);
-  //   try {
-  //     const response = await fetch(`/api/events/${event.id}/rsvp`, {
-  //       method: "POST",
-  //     });
+  const handleRSVP = async () => {
+    if (!isConnected || !address) {
+      alert("Please connect your wallet to RSVP");
+      return;
+    }
 
-  //     const data = await response.json();
+    setIsRSVPing(true);
+    try {
+      const response = await fetch(`/api/events/${event.id}/rsvp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userAddress: address,
+        }),
+      });
 
-  //     if (data.success) {
-  //       // Show success message or update UI
-  //       console.log("RSVP successful:", data.message);
-  //       // Call the onRSVP callback to refresh the events list
-  //       if (onRSVP) {
-  //         onRSVP();
-  //       }
-  //     } else {
-  //       console.error("Failed to RSVP:", data.error);
-  //     }
-  //   } catch (err) {
-  //     console.error("Error RSVPing to event:", err);
-  //   } finally {
-  //     setIsRSVPing(false);
-  //   }
-  // };
+      const data = await response.json();
+
+      if (data.success) {
+        // Show success message or update UI
+        console.log("RSVP successful:", data.message);
+        alert(data.data.message || "Successfully RSVP'd!");
+        // Call the onRSVP callback to refresh the events list
+        if (onRSVP) {
+          onRSVP();
+        }
+      } else {
+        console.error("Failed to RSVP:", data.error);
+        alert(data.error || "Failed to RSVP. Please try again.");
+      }
+    } catch (err) {
+      console.error("Error RSVPing to event:", err);
+    } finally {
+      setIsRSVPing(false);
+    }
+  };
 
   const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {

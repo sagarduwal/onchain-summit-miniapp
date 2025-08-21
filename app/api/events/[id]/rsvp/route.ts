@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
+import { RSVPDatabase } from "@/app/lib/database";
 
+// In-memory storage for events (in production, this would be a database)
 interface Event {
   id: string;
   name: string;
@@ -9,7 +11,6 @@ interface Event {
   rsvpCount: number;
 }
 
-// In-memory storage (same as events route - in production, use shared database)
 const EVENTS: Record<string, Event> = {
   "art-show": {
     id: "art-show",
@@ -21,35 +22,35 @@ const EVENTS: Record<string, Event> = {
   },
   "roor-osc-party": {
     id: "roor-osc-party",
-    name: "ROOR OSC Party - Mustache Harbor",
-    date: "Friday 9:30 PM",
-    description: "ROOR OSC Party at Mustache Harbor, 111 Minna, SF, CA 94105",
-    link: "https://www.onchainsummit.io",
-    rsvpCount: 45,
+    name: "ROOR OSC Party",
+    date: "Friday 8:00-11:00 PM",
+    description: "Exclusive party for Onchain Summit attendees",
+    link: "https://lu.ma/roor-osc-party",
+    rsvpCount: 15,
   },
-  "happy-hour": {
-    id: "happy-hour",
-    name: "Onchain Summit Happy Hour",
-    date: "Friday 5:00-9:00 PM",
-    description: "OSC Opening Happy Hour with DJ Mark Divita",
-    link: "https://www.onchainsummit.io",
-    rsvpCount: 67,
+  "dev-workshop": {
+    id: "dev-workshop",
+    name: "Developer Workshop",
+    date: "Saturday 2:00-5:00 PM",
+    description: "Hands-on blockchain development workshop",
+    link: "https://lu.ma/dev-workshop",
+    rsvpCount: 8,
   },
-  "main-stage": {
-    id: "main-stage",
-    name: "Onchain Summit Main Stage",
-    date: "Saturday 1:30-5:00 PM",
-    description: "Main stage presentations and talks",
-    link: "https://www.onchainsummit.io",
-    rsvpCount: 89,
+  "networking": {
+    id: "networking",
+    name: "Networking Mixer",
+    date: "Sunday 6:00-9:00 PM",
+    description: "Connect with fellow blockchain enthusiasts",
+    link: "https://lu.ma/networking",
+    rsvpCount: 31,
   },
-  "casino-night": {
-    id: "casino-night",
-    name: "OSC Casino Night",
-    date: "Saturday 7:00-11:00 PM",
-    description: "Casino Night hosted by Franco Finn",
-    link: "https://www.onchainsummit.io",
-    rsvpCount: 34,
+  "panel-discussion": {
+    id: "panel-discussion",
+    name: "Panel Discussion",
+    date: "Monday 3:00-4:30 PM",
+    description: "Industry leaders discuss the future of Web3",
+    link: "https://lu.ma/panel-discussion",
+    rsvpCount: 12,
   },
 };
 
@@ -61,6 +62,17 @@ export async function POST(
   try {
     const resolvedParams = await params;
     const eventId = resolvedParams.id;
+    
+    // Get user address from request body
+    const body = await request.json();
+    const userAddress = body.userAddress;
+
+    if (!userAddress) {
+      return NextResponse.json(
+        { success: false, error: "User address is required" },
+        { status: 400 }
+      );
+    }
 
     if (!EVENTS[eventId]) {
       return NextResponse.json(
@@ -69,15 +81,28 @@ export async function POST(
       );
     }
 
-    // Increment RSVP count
-    EVENTS[eventId].rsvpCount += 1;
+    // Check if user has already RSVP'd
+    if (RSVPDatabase.hasUserRSVPd(userAddress, eventId)) {
+      return NextResponse.json(
+        { success: false, error: "You have already RSVP'd to this event" },
+        { status: 400 }
+      );
+    }
+
+    // Add RSVP to database
+    const rsvp = RSVPDatabase.addRSVP(userAddress, EVENTS[eventId]);
+    
+    // Update event RSVP count based on database
+    const newRsvpCount = RSVPDatabase.getEventRSVPCount(eventId);
+    EVENTS[eventId].rsvpCount = newRsvpCount;
 
     return NextResponse.json({
       success: true,
       data: {
         eventId,
         eventName: EVENTS[eventId].name,
-        newRsvpCount: EVENTS[eventId].rsvpCount,
+        newRsvpCount,
+        rsvpId: rsvp.id,
         message: `✅ You're RSVP'd for ${EVENTS[eventId].name}!`,
       },
     });

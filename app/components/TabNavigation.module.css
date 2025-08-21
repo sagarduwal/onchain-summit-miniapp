@@ -1,0 +1,100 @@
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.tabHeader {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 20px 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.tabButtons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.tabButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.tabButton:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.tabButton.active {
+  background: white;
+  color: #667eea;
+  border: 1px solid white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+}
+
+.tabButton.active:hover {
+  background: #f8f9ff;
+  transform: translateY(-2px);
+}
+
+.tabIcon {
+  font-size: 1.2rem;
+}
+
+.tabContent {
+  /* Remove any default padding since each tab component handles its own layout */
+  position: relative;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .tabHeader {
+    padding: 16px 0;
+  }
+
+  .tabButtons {
+    padding: 0 16px;
+    gap: 4px;
+  }
+
+  .tabButton {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+
+  .tabIcon {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .tabButtons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tabButton {
+    justify-content: center;
+    width: 100%;
+  }
+}

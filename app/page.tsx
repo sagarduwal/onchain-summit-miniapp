@@ -1,12 +1,12 @@
 "use client";
 import styles from "./page.module.css";
-import EventsList from "./components/EventsList";
+import TabNavigation from "./components/TabNavigation";
 
 export default function Home() {
   return (
     <div className={styles.container}>
       <div className={styles.content}>
-        <EventsList />
+        <TabNavigation />
       </div>
     </div>
   );
