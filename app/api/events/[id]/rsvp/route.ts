@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { RSVPDatabase } from "@/app/lib/database";
-import { EVENTS, Event } from '@/app/constant';
+import { EVENTS } from '@/app/constant';
 
 // POST /api/events/[id]/rsvp - RSVP to an event
 export async function POST(
