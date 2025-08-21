@@ -18,7 +18,11 @@ interface EventModalProps {
   onRSVP?: () => void;
 }
 
-export default function EventModal({ event, onClose, onRSVP }: EventModalProps) {
+export default function EventModal({
+  event,
+  onClose,
+  onRSVP,
+}: EventModalProps) {
   const { address, isConnected } = useAccount();
   const [isRSVPing, setIsRSVPing] = useState(false);
 
@@ -26,7 +30,7 @@ export default function EventModal({ event, onClose, onRSVP }: EventModalProps) 
 
   const handleRSVP = async () => {
     if (!isConnected || !address) {
-      alert("Please connect your wallet to RSVP");
+      // alert("Please connect your wallet to RSVP");
       return;
     }
 
@@ -45,19 +49,19 @@ export default function EventModal({ event, onClose, onRSVP }: EventModalProps) 
       const data = await response.json();
 
       if (data.success) {
-        // Show success message or update UI
-        console.log("RSVP successful:", data.message);
-        alert(data.data.message || "Successfully RSVP'd!");
-        // Call the onRSVP callback to refresh the events list
+        console.log("RSVP successful:", data.data.message);
+        // alert(data.data.message || "Successfully RSVP'd!");
         if (onRSVP) {
           onRSVP();
         }
+        onClose();
       } else {
         console.error("Failed to RSVP:", data.error);
-        alert(data.error || "Failed to RSVP. Please try again.");
+        // alert(data.error || "Failed to RSVP. Please try again.");
       }
     } catch (err) {
       console.error("Error RSVPing to event:", err);
+      // alert("An error occurred while RSVPing. Please try again.");
     } finally {
       setIsRSVPing(false);
     }
@@ -103,13 +107,14 @@ export default function EventModal({ event, onClose, onRSVP }: EventModalProps) 
         </div>
 
         <div className={styles.modalFooter}>
-          {/* <button 
+          <button
             className={styles.rsvpButton}
             onClick={handleRSVP}
             disabled={isRSVPing}
+            style={{ display: "none" }}
           >
             {isRSVPing ? "RSVPing..." : "RSVP Now"}
-          </button> */}
+          </button>
           <a
             href={event.link}
             target="_blank"

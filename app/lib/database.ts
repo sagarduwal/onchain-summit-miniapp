@@ -17,7 +17,7 @@ let userRSVPs: UserRSVP[] = [];
 
 export class RSVPDatabase {
   // Add a new RSVP for a user
-  static addRSVP(userAddress: string, event: any): UserRSVP {
+  static addRSVP(userAddress: string, event: { id: string; name: string; date: string; description: string; link: string }): UserRSVP {
     const rsvpId = `rsvp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     
     const newRSVP: UserRSVP = {

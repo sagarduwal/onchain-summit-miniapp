@@ -91,9 +91,9 @@ export default function EventsList() {
 
   return (
     <div className={styles.container}>
-      <TopEvents 
-        totalEvents={totalEvents} 
-        totalRSVPs={totalRSVPs} 
+      <TopEvents
+        totalEvents={totalEvents}
+        totalRSVPs={totalRSVPs}
         onEventClick={handleEventClick}
       />
 
@@ -106,18 +106,15 @@ export default function EventsList() {
           >
             <div className={styles.eventHeader}>
               <h3 className={styles.eventName}>{event.name}</h3>
-              <span className={styles.rsvpCount}>{event.rsvpCount} RSVPs</span>
+              <div className={styles.rsvpCounter}>
+                <span className={styles.rsvpCount}>{event.rsvpCount}</span>
+                <span className={styles.rsvpLabel}>RSVPs</span>
+              </div>
             </div>
             <p className={styles.eventDate}>📅 {event.date}</p>
             <p className={styles.eventDescription}>{event.description}</p>
 
             <div className={styles.eventActions}>
-              {/* <button
-                className={styles.rsvpButton}
-                onClick={() => handleRSVP(event.id)}
-              >
-                RSVP Now
-              </button> */}
               <a
                 href={event.link}
                 target="_blank"

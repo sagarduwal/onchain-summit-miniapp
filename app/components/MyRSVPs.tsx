@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAccount } from "wagmi";
 import styles from "./MyRSVPs.module.css";
 import EventModal from "./EventModal";
@@ -28,10 +28,17 @@ export default function MyRSVPs() {
   const [rsvps, setRSVPs] = useState<UserRSVP[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedEvent, setSelectedEvent] = useState<any | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<{
+    id: string;
+    name: string;
+    date: string;
+    description: string;
+    link: string;
+    rsvpCount: number;
+  } | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const fetchUserRSVPs = async () => {
+  const fetchUserRSVPs = useCallback(async () => {
     if (!address) {
       setLoading(false);
       return;
@@ -53,11 +60,11 @@ export default function MyRSVPs() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [address]);
 
   useEffect(() => {
     fetchUserRSVPs();
-  }, [address]);
+  }, [fetchUserRSVPs]);
 
   const handleEventClick = (rsvp: UserRSVP) => {
     // Convert RSVP to Event format for the modal
@@ -83,7 +90,9 @@ export default function MyRSVPs() {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>My RSVPs</h1>
-          <p className={styles.subtitle}>Connect your wallet to view your RSVP'd events</p>
+          <p className={styles.subtitle}>
+            Connect your wallet to view your RSVP&apos;d events
+          </p>
         </div>
         <div className={styles.connectPrompt}>
           <p>Please connect your wallet to see your RSVP history.</p>
@@ -97,7 +106,7 @@ export default function MyRSVPs() {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>My RSVPs</h1>
-          <p className={styles.subtitle}>Loading your RSVP'd events...</p>
+          <p className={styles.subtitle}>Loading your RSVP&apos;d events...</p>
         </div>
       </div>
     );
@@ -120,7 +129,9 @@ export default function MyRSVPs() {
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>My RSVPs</h1>
-          <p className={styles.subtitle}>You haven't RSVP'd to any events yet</p>
+          <p className={styles.subtitle}>
+            You haven&apos;t RSVP&apos;d to any events yet
+          </p>
         </div>
         <div className={styles.emptyState}>
           <p>Start exploring events and RSVP to see them here!</p>
@@ -134,21 +145,22 @@ export default function MyRSVPs() {
       <div className={styles.header}>
         <h1 className={styles.title}>My RSVPs</h1>
         <p className={styles.subtitle}>
-          You're RSVP'd to {rsvps.length} event{rsvps.length !== 1 ? 's' : ''}
+          You&apos;re RSVP&apos;d to {rsvps.length} event
+          {rsvps.length !== 1 ? "s" : ""}
         </p>
       </div>
 
       <div className={styles.rsvpsList}>
         {rsvps.map((rsvp) => (
-          <div 
-            key={rsvp.id} 
+          <div
+            key={rsvp.id}
             className={styles.rsvpCard}
             onClick={() => handleEventClick(rsvp)}
           >
             <div className={styles.rsvpHeader}>
               <h3 className={styles.eventName}>{rsvp.eventName}</h3>
               <span className={styles.rsvpDate}>
-                RSVP'd {new Date(rsvp.rsvpDate).toLocaleDateString()}
+                RSVP&apos;d {new Date(rsvp.rsvpDate).toLocaleDateString()}
               </span>
             </div>
             <p className={styles.eventDate}>{rsvp.eventDate}</p>
@@ -169,8 +181,8 @@ export default function MyRSVPs() {
       </div>
 
       {isModalOpen && selectedEvent && (
-        <EventModal 
-          event={selectedEvent} 
+        <EventModal
+          event={selectedEvent}
           onClose={handleCloseModal}
           onRSVP={() => {
             // Refresh RSVPs to get updated data
